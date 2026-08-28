@@ -20,9 +20,10 @@ Flutter + Firebase app for college campuses to report and find lost items.
    flutter pub get
    ```
 
-3. **Add Firebase config** — not tracked in git (see `.gitignore`). Get the real files from the team's shared secrets zip and place them at:
+3. **Add Firebase config** — extract `secrets.zip` (in the repo root) and place the files at:
    - `android/app/google-services.json`
    - `lib/firebase_options.dart`
+   - `android/local.properties` (optional — Flutter/Android Studio regenerates this pointing at your own SDK install)
 
    (Or run `flutterfire configure` to point at your own Firebase project instead.)
 
