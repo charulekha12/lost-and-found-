@@ -1,0 +1,15 @@
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - avoid_print
+    - unnecessary_nullable_for_final_variable_declarations
+    - use_key_in_widget_constructors
+    - sort_child_properties_last
+    - sized_box_for_whitespace
