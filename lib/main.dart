@@ -13,10 +13,16 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase. Android auto-initializes the default app natively
+  // via the google-services plugin before Dart runs, so this call always
+  // races a "duplicate-app" error there — ignore just that one.
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    if (e.code != 'duplicate-app') rethrow;
+  }
 
   // Lock portrait orientation
   await SystemChrome.setPreferredOrientations([

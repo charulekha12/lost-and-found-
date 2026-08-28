@@ -10,7 +10,20 @@
 
 ## 🚀 How to Clone & Run (Quick Start for Teammates)
 
-Follow these exact steps if you are cloning this project from GitHub:
+### 0️⃣ Prerequisites
+
+Install these once, in order:
+
+1. **[Flutter SDK](https://docs.flutter.dev/get-started/install)** (3.x, stable channel). Verify with:
+   ```bash
+   flutter doctor
+   ```
+2. **Android SDK** — needed even if you only run on a physical phone via USB. Easiest path: install [Android Studio](https://developer.android.com/studio) and let it install the SDK, platform-tools (`adb`), and a build-tools version on first launch. (A command-line-tools-only setup also works — see [Troubleshooting](#-troubleshooting) below.)
+3. Accept the Android licenses:
+   ```bash
+   flutter doctor --android-licenses
+   ```
+4. Run `flutter doctor` again — every line should show a green `[✓]` for Android toolchain before continuing (web/desktop-only checks can stay unchecked).
 
 ### 1️⃣ Clone the Repository
 ```bash
@@ -20,24 +33,57 @@ cd "YOUR_REPO_NAME"
 
 ### 2️⃣ Install Dependencies
 ```bash
-### 2️⃣ Install Dependencies
-```bash
 flutter pub get
 ```
 
 ### 3️⃣ Run the App!
+- **Run on Android (Emulator or Connected Phone via USB debugging):**
+  ```bash
+  flutter devices   # confirm your phone shows up here first
+  flutter run
+  ```
+  On the phone: enable Developer Options → **USB debugging**, plug in via USB, and accept the "Allow USB debugging?" prompt that pops up on the device screen. If the phone doesn't appear in `flutter devices`, see [Troubleshooting](#-troubleshooting).
 - **Run in Web Browser (Chrome):**
   ```bash
   flutter run -d chrome
-  ```
-- **Run on Android (Emulator or Connected Phone):**
-  ```bash
-  flutter run
   ```
 - **Run as Windows Desktop App:**
   ```bash
   flutter run -d windows
   ```
+
+---
+
+## 🛠️ Troubleshooting
+
+**Gradle build fails / `flutter run` fails on Android with no clear Dart error**
+This is almost always a native Android toolchain problem, not an app bug. Run `flutter doctor -v` and fix every `[✗]`/`[!]` under "Android toolchain" first — a red Dart stack trace during a *Gradle* failure is usually a red herring.
+
+**`Unable to locate Android SDK` / `No Android SDK found`**
+Android Studio wasn't installed, or Flutter doesn't know where it is. Either install Android Studio (its SDK Manager handles everything), or install the SDK manually:
+```bash
+# after installing the "command line tools only" package from
+# https://developer.android.com/studio#command-line-tools-only
+sdkmanager --sdk_root=<path> "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+flutter config --android-sdk <path>
+flutter doctor --android-licenses
+```
+
+**`Some Android licenses not accepted`**
+Run `flutter doctor --android-licenses` and accept each prompt with `y`. If that hangs or the prompt seems ignored, the SDK is not installed correctly — reinstall via Android Studio's SDK Manager instead.
+
+**Phone doesn't show up in `flutter devices` over USB**
+- Enable **Developer Options** (Settings → About phone → tap "Build number" 7 times), then enable **USB debugging** inside Developer Options.
+- Accept the "Allow USB debugging?" dialog on the phone when it appears (it only appears once you actually plug in and the computer's `adb` talks to it).
+- Try a different USB cable/port — many cables are charge-only.
+- Run `adb devices` — if it lists nothing or says `unauthorized`, revoke USB debugging authorizations on the phone (Developer Options) and reconnect.
+
+**Missing/incomplete `android/` folder (missing `settings.gradle`, `MainActivity.kt`, `gradlew`, etc.)**
+This can happen if the project folder was zipped/shared without the full Android scaffolding. Regenerate it without touching your Dart code:
+```bash
+flutter create --platforms=android .
+```
+Then re-check `android/app/build.gradle.kts` (or `build.gradle`) still has the Firebase `google-services` plugin applied, since a fresh scaffold won't include it.
 
 ---
 
@@ -102,9 +148,11 @@ lib/
 
 ---
 
-## 🔥 Firebase Setup (REQUIRED)
+## 🔥 Firebase Setup
 
-> ⚠️ **You MUST complete this step before running the app.**
+> ✅ **Already done for this repo.** `lib/firebase_options.dart` and `android/app/google-services.json` are checked in and point at the project's shared Firebase backend (`lost-and-found-cc958`), so `flutter pub get` + `flutter run` is all a teammate needs — no `flutterfire configure` required.
+>
+> Only follow the steps below if you're deliberately pointing this app at your **own** Firebase project (e.g. testing in isolation).
 
 ### Step 1 — Create a Firebase Project
 1. Go to [console.firebase.google.com](https://console.firebase.google.com)
@@ -177,15 +225,9 @@ service firebase.storage {
 
 ---
 
-## 🚀 Running the App
+## 📦 Release Builds
 
 ```bash
-# Install dependencies
-flutter pub get
-
-# Run in debug mode
-flutter run
-
 # Build release APK
 flutter build apk --release
 
@@ -311,8 +353,6 @@ final user = context.read<UserProvider>().user;
 
 ## ✅ Checklist Before Submission
 
-- [ ] Firebase project created & configured (`flutterfire configure` done)
-- [ ] `google-services.json` replaced with real file
 - [ ] Firestore Security Rules deployed
 - [ ] Firebase Storage Rules deployed
 - [ ] App runs on physical Android device
