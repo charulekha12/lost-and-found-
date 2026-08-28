@@ -1,5 +1,5 @@
 gradle-wrapper.jar
-/.gradle
+.gradle/
 /captures/
 /gradlew
 /gradlew.bat
@@ -12,3 +12,6 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# Firebase secrets - real file lives outside git, see /android/app/google-services.json.example
+app/google-services.json

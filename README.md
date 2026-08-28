@@ -150,9 +150,11 @@ lib/
 
 ## 🔥 Firebase Setup
 
-> ✅ **Already done for this repo.** `lib/firebase_options.dart` and `android/app/google-services.json` are checked in and point at the project's shared Firebase backend (`lost-and-found-cc958`), so `flutter pub get` + `flutter run` is all a teammate needs — no `flutterfire configure` required.
+> ⚠️ **Not checked into git.** `lib/firebase_options.dart` and `android/app/google-services.json` hold real Firebase API keys, so they're gitignored — only placeholder `*.example` versions are tracked. Get the real files from the team's shared secrets zip (ask a maintainer) and drop them in at:
+> - `lib/firebase_options.dart` (copy from `lib/firebase_options.example.dart` and fill in, or use the real file from the zip)
+> - `android/app/google-services.json` (from the zip)
 >
-> Only follow the steps below if you're deliberately pointing this app at your **own** Firebase project (e.g. testing in isolation).
+> Then `flutter pub get` + `flutter run` works as before — no `flutterfire configure` needed unless you're pointing at your **own** Firebase project (e.g. testing in isolation), in which case follow the steps below.
 
 ### Step 1 — Create a Firebase Project
 1. Go to [console.firebase.google.com](https://console.firebase.google.com)

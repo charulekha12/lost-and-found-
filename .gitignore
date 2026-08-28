@@ -46,3 +46,12 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Secrets / environment config - real values live outside git, see the
+# secrets bundle zip. *.example files above stay tracked as templates.
+/lib/firebase_options.dart
+/android/app/google-services.json
+/android/local.properties
+/ios/Runner/GoogleService-Info.plist
+*.env
+.env*
