@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 
@@ -122,6 +123,30 @@ class UserProvider extends ChangeNotifier {
       final url = await _firestoreService.uploadProfileImage(
         uid: uid,
         file: imageFile,
+      );
+      await _firestoreService.updateUser(uid, {'profileImageUrl': url});
+      _user = _user.copyWith(profileImageUrl: url);
+      _errorMessage = '';
+      notifyListeners();
+      return url;
+    } on FirestoreException catch (e) {
+      _errorMessage = e.message;
+      return null;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  /// Uploads a new profile image bytes and updates Firestore with the URL.
+  Future<String?> uploadProfileImageBytes(Uint8List bytes) async {
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return null;
+
+    _setLoading(true);
+    try {
+      final url = await _firestoreService.uploadProfileImageBytes(
+        uid: uid,
+        bytes: bytes,
       );
       await _firestoreService.updateUser(uid, {'profileImageUrl': url});
       _user = _user.copyWith(profileImageUrl: url);

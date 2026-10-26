@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,9 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
 
       await FirestoreService.instance.submitSupportRequest(
         userId: authProvider.currentUser?.uid ?? 'guest',
-        name: user.fullName.isNotEmpty ? user.fullName : 'Anonymous',
+        name: user.fullName.isNotEmpty
+            ? user.fullName
+            : 'Anonymous',
         email: user.email.isNotEmpty
             ? user.email
             : (authProvider.currentUser?.email ?? ''),
@@ -60,6 +63,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
 
       _subjectController.clear();
       _messageController.clear();
+
       SnackbarUtils.showSuccess(
         context,
         'Support request submitted! We\'ll get back to you soon.',
@@ -68,7 +72,9 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
       if (!mounted) return;
       SnackbarUtils.showError(context, e.message);
     } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
     }
   }
 
@@ -85,13 +91,12 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
           child: SafeArea(
             child: Column(
               children: [
-                // ── App Bar ─────────────────────────────────────
                 _buildAppBar(),
-
-                // ── Content ─────────────────────────────────────
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -117,6 +122,8 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
       ),
     );
   }
+
+  // ── App Bar ──────────────────────────────────────────────────────────────
 
   Widget _buildAppBar() {
     return Padding(
@@ -148,6 +155,8 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
     );
   }
 
+  // ── Help Header ──────────────────────────────────────────────────────────
+
   Widget _buildHelpHeader() {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -155,7 +164,10 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF00B4D8), Color(0xFF005F7A)],
+          colors: [
+            Color(0xFF00B4D8),
+            Color(0xFF005F7A),
+          ],
         ),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -206,6 +218,8 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
         .fadeIn(duration: 400.ms)
         .slideY(begin: 0.1, end: 0, duration: 400.ms);
   }
+
+  // ── Contact Cards ────────────────────────────────────────────────────────
 
   Widget _buildContactCards() {
     return Column(
@@ -258,10 +272,10 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
           isWide: true,
         ),
       ],
-    )
-        .animate()
-        .fadeIn(delay: 100.ms, duration: 400.ms);
+    ).animate().fadeIn(delay: 100.ms, duration: 400.ms);
   }
+
+  // ── FAQ Section ──────────────────────────────────────────────────────────
 
   Widget _buildFaqSection() {
     return Column(
@@ -278,32 +292,43 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.darkCard,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.darkBorder),
+            border: Border.all(color: const Color(0xFFE1E5EB)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-          child: Column(
-            children: List.generate(
-              AppConstants.faqItems.length,
-              (i) => _FaqTile(
-                question: AppConstants.faqItems[i]['q']!,
-                answer: AppConstants.faqItems[i]['a']!,
-                isExpanded: _expandedFaqIndex == i,
-                isLast: i == AppConstants.faqItems.length - 1,
-                onTap: () {
-                  setState(() {
-                    _expandedFaqIndex = _expandedFaqIndex == i ? null : i;
-                  });
-                },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Column(
+              children: List.generate(
+                AppConstants.faqItems.length,
+                (i) => _FaqTile(
+                  question: AppConstants.faqItems[i]['q']!,
+                  answer: AppConstants.faqItems[i]['a']!,
+                  isExpanded: _expandedFaqIndex == i,
+                  isLast: i == AppConstants.faqItems.length - 1,
+                  onTap: () {
+                    setState(() {
+                      _expandedFaqIndex =
+                          _expandedFaqIndex == i ? null : i;
+                    });
+                  },
+                ),
               ),
             ),
           ),
         ),
       ],
-    )
-        .animate()
-        .fadeIn(delay: 200.ms, duration: 400.ms);
+    ).animate().fadeIn(delay: 200.ms, duration: 400.ms);
   }
+
+  // ── Contact Form ─────────────────────────────────────────────────────────
 
   Widget _buildContactForm() {
     return Column(
@@ -321,9 +346,16 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: AppTheme.darkCard,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.darkBorder),
+            border: Border.all(color: const Color(0xFFE1E5EB)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           child: Form(
             key: _formKey,
@@ -360,10 +392,10 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
           ),
         ),
       ],
-    )
-        .animate()
-        .fadeIn(delay: 300.ms, duration: 400.ms);
+    ).animate().fadeIn(delay: 300.ms, duration: 400.ms);
   }
+
+  // ── App Version ──────────────────────────────────────────────────────────
 
   Widget _buildAppVersion() {
     return Center(
@@ -401,9 +433,16 @@ class _ContactCard extends StatelessWidget {
       width: isWide ? double.infinity : null,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppTheme.darkCard,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.darkBorder),
+        border: Border.all(color: const Color(0xFFE1E5EB)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -411,7 +450,7 @@ class _ContactCard extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withOpacity(0.12),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 18),
@@ -424,18 +463,18 @@ class _ContactCard extends StatelessWidget {
                 Text(
                   label,
                   style: const TextStyle(
-                    color: AppTheme.textSecondary,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF64748B),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   value,
                   style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                    color: Color(0xFF172033),
                     fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -472,9 +511,6 @@ class _FaqTile extends StatelessWidget {
       children: [
         InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(
-            isExpanded || isLast ? 0 : 12,
-          ),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -484,10 +520,10 @@ class _FaqTile extends StatelessWidget {
                     question,
                     style: TextStyle(
                       color: isExpanded
-                          ? AppTheme.primaryTeal
-                          : AppTheme.textPrimary,
+                          ? const Color(0xFF007F95)
+                          : const Color(0xFF172033),
                       fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -498,9 +534,9 @@ class _FaqTile extends StatelessWidget {
                   child: Icon(
                     Icons.keyboard_arrow_down_rounded,
                     color: isExpanded
-                        ? AppTheme.primaryTeal
-                        : AppTheme.textSecondary,
-                    size: 20,
+                        ? const Color(0xFF007F95)
+                        : const Color(0xFF64748B),
+                    size: 22,
                   ),
                 ),
               ],
@@ -517,7 +553,7 @@ class _FaqTile extends StatelessWidget {
                   child: Text(
                     answer,
                     style: const TextStyle(
-                      color: AppTheme.textSecondary,
+                      color: Color(0xFF475569),
                       fontSize: 13,
                       height: 1.5,
                     ),
@@ -525,7 +561,11 @@ class _FaqTile extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
         ),
-        if (!isLast) const Divider(height: 1),
+        if (!isLast)
+          const Divider(
+            height: 1,
+            color: Color(0xFFE5E7EB),
+          ),
       ],
     );
   }

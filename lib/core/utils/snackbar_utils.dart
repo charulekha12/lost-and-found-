@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../../config/app_theme.dart';
@@ -75,7 +76,7 @@ class SnackbarUtils {
     required Color iconColor,
     Duration duration = _defaultDuration,
   }) {
-    // Remove any existing SnackBar
+    // Remove any existing SnackBar.
     ScaffoldMessenger.of(context).clearSnackBars();
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -83,23 +84,33 @@ class SnackbarUtils {
         duration: duration,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: borderColor, width: 1),
+          side: BorderSide(
+            color: borderColor,
+            width: 1,
+          ),
         ),
         content: Row(
           children: [
-            Icon(icon, color: iconColor, size: 20),
+            Icon(
+              icon,
+              color: iconColor,
+              size: 20,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 message,
                 style: const TextStyle(
-                  color: AppTheme.textPrimary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

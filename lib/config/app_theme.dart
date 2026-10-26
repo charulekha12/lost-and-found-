@@ -2,47 +2,77 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Central theme definition for the Campus Lost & Found app.
-/// Uses a dark theme with teal/cyan accent palette.
+/// Central theme definition for Findora — Campus Lost & Found.
+/// Light theme with navy/teal palette matching the reference design.
 class AppTheme {
   AppTheme._();
 
-  // ── Color Palette ──────────────────────────────────────────────
+  // ── Primary Palette ────────────────────────────────────────────
+  static const Color primaryNavy = Color(0xFF0A2540);
+  static const Color primaryNavyLight = Color(0xFF1B3A5C);
+  static const Color primaryTeal = Color(0xFF00B4D8);
+  static const Color primaryTealDark = Color(0xFF0090B0);
+  static const Color primaryTealLight = Color(0xFFE0F7FC);
+
+  // ── Background Colors ──────────────────────────────────────────
+  static const Color scaffoldBg = Color(0xFFF0F4F8);
+  static const Color cardWhite = Color(0xFFFFFFFF);
+  static const Color cardLight = Color(0xFFF8FAFC);
+  static const Color surfaceLight = Color(0xFFEEF2F7);
+
+  // ── Border Colors ──────────────────────────────────────────────
+  static const Color borderLight = Color(0xFFE2E8F0);
+  static const Color borderMedium = Color(0xFFCBD5E1);
+
+  // ── Text Colors ────────────────────────────────────────────────
+  static const Color textPrimary = Color(0xFF0A2540);
+  static const Color textSecondary = Color(0xFF64748B);
+  static const Color textHint = Color(0xFF94A3B8);
+  static const Color textWhite = Color(0xFFFFFFFF);
+
+  // ── Semantic Colors ────────────────────────────────────────────
+  static const Color errorColor = Color(0xFFEF4444);
+  static const Color successColor = Color(0xFF22C55E);
+  static const Color warningColor = Color(0xFFF59E0B);
+  static const Color infoColor = Color(0xFF3B82F6);
+
+  // ── Legacy dark theme compat ───────────────────────────────────
   static const Color darkBackground = Color(0xFF0D1117);
   static const Color darkSurface = Color(0xFF161B22);
   static const Color darkCard = Color(0xFF21262D);
   static const Color darkBorder = Color(0xFF30363D);
-
-  static const Color primaryTeal = Color(0xFF00B4D8);
-  static const Color primaryTealDark = Color(0xFF0077A8);
   static const Color accentCyan = Color(0xFF00E5FF);
   static const Color accentGreen = Color(0xFF56CFE1);
-
-  static const Color textPrimary = Color(0xFFE6EDF3);
-  static const Color textSecondary = Color(0xFF8B949E);
-  static const Color textHint = Color(0xFF484F58);
-
-  static const Color errorColor = Color(0xFFF85149);
-  static const Color successColor = Color(0xFF3FB950);
-  static const Color warningColor = Color(0xFFD29922);
 
   // ── Gradients ──────────────────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [primaryTeal, Color(0xFF0077A8)],
+    colors: [primaryTeal, primaryNavy],
+  );
+
+  static const LinearGradient navyGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [primaryNavy, primaryNavyLight],
+  );
+
+  static const LinearGradient tealGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [primaryTeal, Color(0xFF00D4F5)],
   );
 
   static const LinearGradient backgroundGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFF0D1117), Color(0xFF0A1628)],
+    colors: [scaffoldBg, Color(0xFFE8EFF7)],
   );
 
   static const LinearGradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF21262D), Color(0xFF1A1F27)],
+    colors: [cardWhite, cardLight],
   );
 
   // ── Text Theme ─────────────────────────────────────────────────
@@ -111,27 +141,27 @@ class AppTheme {
         ),
       );
 
-  // ── Dark Theme ─────────────────────────────────────────────────
-  static ThemeData get darkTheme {
+  // ── Light Theme (Findora) ──────────────────────────────────────
+  static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
-      colorScheme: const ColorScheme.dark(
+      brightness: Brightness.light,
+      colorScheme: const ColorScheme.light(
         primary: primaryTeal,
         onPrimary: Colors.white,
-        secondary: accentCyan,
-        onSecondary: Colors.black,
-        surface: darkSurface,
+        secondary: primaryNavy,
+        onSecondary: Colors.white,
+        surface: cardWhite,
         onSurface: textPrimary,
         error: errorColor,
         onError: Colors.white,
       ),
-      scaffoldBackgroundColor: darkBackground,
+      scaffoldBackgroundColor: scaffoldBg,
       textTheme: _textTheme,
 
       // AppBar
       appBarTheme: AppBarTheme(
-        backgroundColor: darkBackground,
+        backgroundColor: cardWhite,
         elevation: 0,
         centerTitle: true,
         iconTheme: const IconThemeData(color: textPrimary),
@@ -142,17 +172,17 @@ class AppTheme {
         ),
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.dark,
         ),
       ),
 
       // Card
       cardTheme: CardThemeData(
-        color: darkCard,
+        color: cardWhite,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: darkBorder, width: 1),
+          side: const BorderSide(color: borderLight, width: 1),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -160,16 +190,16 @@ class AppTheme {
       // Input Decoration
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: darkCard,
+        fillColor: cardWhite,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: darkBorder),
+          borderSide: const BorderSide(color: borderLight),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: darkBorder),
+          borderSide: const BorderSide(color: borderLight),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -237,7 +267,7 @@ class AppTheme {
 
       // Divider
       dividerTheme: const DividerThemeData(
-        color: darkBorder,
+        color: borderLight,
         thickness: 1,
         space: 1,
       ),
@@ -255,7 +285,7 @@ class AppTheme {
 
       // Drawer
       drawerTheme: const DrawerThemeData(
-        backgroundColor: darkSurface,
+        backgroundColor: cardWhite,
         surfaceTintColor: Colors.transparent,
       ),
 
@@ -267,19 +297,31 @@ class AppTheme {
 
       // Chip
       chipTheme: ChipThemeData(
-        backgroundColor: darkCard,
-        selectedColor: Color(0x3300B4D8),
-        side: const BorderSide(color: darkBorder),
+        backgroundColor: surfaceLight,
+        selectedColor: primaryTealLight,
+        side: const BorderSide(color: borderLight),
         labelStyle: GoogleFonts.poppins(color: textPrimary, fontSize: 12),
       ),
 
       // SnackBar
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: darkCard,
-        contentTextStyle: GoogleFonts.poppins(color: textPrimary),
+        backgroundColor: primaryNavy,
+        contentTextStyle: GoogleFonts.poppins(color: Colors.white),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         behavior: SnackBarBehavior.floating,
       ),
+
+      // Bottom Navigation Bar
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: cardWhite,
+        selectedItemColor: primaryTeal,
+        unselectedItemColor: textSecondary,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8,
+      ),
     );
   }
+
+  // Keep darkTheme for backward compat
+  static ThemeData get darkTheme => lightTheme;
 }

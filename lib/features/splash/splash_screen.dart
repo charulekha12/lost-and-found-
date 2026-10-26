@@ -7,9 +7,10 @@ import '../../config/app_routes.dart';
 import '../../config/app_theme.dart';
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/user_provider.dart';
+import '../../widgets/findora_logo.dart';
 
-/// Animated splash screen that auto-navigates based on auth state.
-/// Shows app logo, name, and tagline with staggered entrance animations.
+/// Findora splash screen — navy gradient with animated logo.
+/// Auto-navigates to onboarding (first launch) or home/login.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -26,9 +27,8 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 2000),
     )..forward();
-
     _navigate();
   }
 
@@ -39,20 +39,19 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(AppConstants.splashDuration);
+    await Future.delayed(const Duration(milliseconds: 2800));
     if (!mounted) return;
 
     final authProvider = context.read<AuthProvider>();
     final userProvider = context.read<UserProvider>();
 
     if (authProvider.isAuthenticated && authProvider.currentUser != null) {
-      // Pre-load user data before navigating home
       await userProvider.fetchUser(uid: authProvider.currentUser!.uid);
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     } else {
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
+      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
     }
   }
 
@@ -65,9 +64,9 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF0D1117),
-              Color(0xFF0A1628),
-              Color(0xFF0D1F2D),
+              Color(0xFF0A2540),
+              Color(0xFF0D2F4F),
+              Color(0xFF0A2540),
             ],
             stops: [0.0, 0.5, 1.0],
           ),
@@ -75,34 +74,93 @@ class _SplashScreenState extends State<SplashScreen>
         child: SafeArea(
           child: Stack(
             children: [
-              // ── Background Decorations ───────────────────────
               _BackgroundDecor(),
-
-              // ── Main Content ─────────────────────────────────
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // App Logo / Icon
-                    _buildLogo(),
-                    const SizedBox(height: 32),
-
-                    // App Name
-                    _buildAppName(),
-                    const SizedBox(height: 12),
-
-                    // Tagline
-                    _buildTagline(),
+                    FindoraLogo(size: 96, darkBackground: true)
+                        .animate(controller: _controller)
+                        .scale(
+                          begin: const Offset(0.3, 0.3),
+                          end: const Offset(1.0, 1.0),
+                          duration: 700.ms,
+                          curve: Curves.elasticOut,
+                        )
+                        .fadeIn(duration: 500.ms),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Lost something?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white.withOpacity(0.7),
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                        .animate(controller: _controller)
+                        .fadeIn(delay: 800.ms, duration: 600.ms)
+                        .slideY(
+                          begin: 0.3,
+                          end: 0,
+                          delay: 800.ms,
+                          duration: 600.ms,
+                          curve: Curves.easeOutCubic,
+                        ),
+                    Text(
+                      'Find your way back to it.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppTheme.primaryTeal.withOpacity(0.9),
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                        .animate(controller: _controller)
+                        .fadeIn(delay: 1000.ms, duration: 600.ms)
+                        .slideY(
+                          begin: 0.3,
+                          end: 0,
+                          delay: 1000.ms,
+                          duration: 600.ms,
+                          curve: Curves.easeOutCubic,
+                        ),
                   ],
                 ),
               ),
-
-              // ── Bottom Loader ────────────────────────────────
               Positioned(
-                bottom: 48,
+                bottom: 40,
                 left: 0,
                 right: 0,
-                child: _buildLoader(),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _TagBadge(icon: Icons.search_rounded, label: 'Simple'),
+                        const SizedBox(width: 16),
+                        _TagBadge(icon: Icons.shield_outlined, label: 'Secure'),
+                        const SizedBox(width: 16),
+                        _TagBadge(icon: Icons.people_outline_rounded, label: 'Together'),
+                      ],
+                    )
+                        .animate(controller: _controller)
+                        .fadeIn(delay: 1300.ms, duration: 700.ms),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppTheme.primaryTeal.withOpacity(0.6),
+                        ),
+                      ),
+                    )
+                        .animate(controller: _controller)
+                        .fadeIn(delay: 1500.ms, duration: 500.ms),
+                  ],
+                ),
               ),
             ],
           ),
@@ -110,129 +168,32 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
-
-  Widget _buildLogo() {
-    return Container(
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: AppTheme.primaryGradient,
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.primaryTeal.withOpacity(0.4),
-            blurRadius: 40,
-            spreadRadius: 8,
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.search_rounded,
-        color: Colors.white,
-        size: 48,
-      ),
-    )
-        .animate(controller: _controller)
-        .scale(
-          begin: const Offset(0, 0),
-          end: const Offset(1, 1),
-          duration: 600.ms,
-          curve: Curves.elasticOut,
-        )
-        .fadeIn(duration: 400.ms);
-  }
-
-  Widget _buildAppName() {
-    return Column(
-      children: [
-        Text(
-          'Campus',
-          style: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.w800,
-            color: AppTheme.textPrimary,
-            letterSpacing: -0.5,
-            height: 1.1,
-          ),
-        ),
-        ShaderMask(
-          shaderCallback: (bounds) => AppTheme.primaryGradient.createShader(
-            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-          ),
-          child: const Text(
-            'Lost & Found',
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-              letterSpacing: -0.5,
-              height: 1.1,
-            ),
-          ),
-        ),
-      ],
-    )
-        .animate(controller: _controller)
-        .fadeIn(delay: 400.ms, duration: 600.ms)
-        .slideY(
-          begin: 0.3,
-          end: 0,
-          delay: 400.ms,
-          duration: 600.ms,
-          curve: Curves.easeOutCubic,
-        );
-  }
-
-  Widget _buildTagline() {
-    return Text(
-      AppConstants.appTagline,
-      style: const TextStyle(
-        color: AppTheme.textSecondary,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.5,
-      ),
-    )
-        .animate(controller: _controller)
-        .fadeIn(delay: 700.ms, duration: 600.ms)
-        .slideY(
-          begin: 0.2,
-          end: 0,
-          delay: 700.ms,
-          duration: 600.ms,
-          curve: Curves.easeOutCubic,
-        );
-  }
-
-  Widget _buildLoader() {
-    return Column(
-      children: [
-        SizedBox(
-          width: 32,
-          height: 32,
-          child: CircularProgressIndicator(
-            strokeWidth: 2.5,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              AppTheme.primaryTeal.withOpacity(0.7),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          'Loading...',
-          style: TextStyle(
-            color: AppTheme.textHint,
-            fontSize: 12,
-          ),
-        ),
-      ],
-    )
-        .animate(controller: _controller)
-        .fadeIn(delay: 900.ms, duration: 600.ms);
-  }
 }
 
-// ── Background Decorative Circles ──────────────────────────────────────────
+class _TagBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _TagBadge({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: AppTheme.primaryTeal),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class _BackgroundDecor extends StatelessWidget {
   @override
@@ -241,20 +202,18 @@ class _BackgroundDecor extends StatelessWidget {
     return SizedBox.expand(
       child: Stack(
         children: [
-          // Top-left glow
           Positioned(
-            top: -size.width * 0.3,
-            left: -size.width * 0.3,
+            top: -size.width * 0.4,
+            left: -size.width * 0.4,
             child: Container(
-              width: size.width * 0.7,
-              height: size.width * 0.7,
+              width: size.width * 0.9,
+              height: size.width * 0.9,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppTheme.primaryTeal.withOpacity(0.05),
+                color: AppTheme.primaryTeal.withOpacity(0.06),
               ),
             ),
           ),
-          // Bottom-right glow
           Positioned(
             bottom: -size.width * 0.3,
             right: -size.width * 0.3,
@@ -263,37 +222,12 @@ class _BackgroundDecor extends StatelessWidget {
               height: size.width * 0.8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppTheme.accentCyan.withOpacity(0.04),
+                color: Colors.blue.withOpacity(0.05),
               ),
             ),
-          ),
-          // Center radial dots grid
-          Positioned.fill(
-            child: CustomPaint(painter: _DotGridPainter()),
           ),
         ],
       ),
     );
   }
-}
-
-class _DotGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppTheme.primaryTeal.withOpacity(0.04)
-      ..style = PaintingStyle.fill;
-
-    const spacing = 28.0;
-    const dotRadius = 1.5;
-
-    for (double x = 0; x < size.width; x += spacing) {
-      for (double y = 0; y < size.height; y += spacing) {
-        canvas.drawCircle(Offset(x, y), dotRadius, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -10,6 +10,7 @@ class AppConstants {
   // ── Firestore Collections ──────────────────────────────────────
   static const String usersCollection = 'users';
   static const String itemsCollection = 'items';
+  static const String claimsCollection = 'claims';
   static const String supportCollection = 'support_requests';
 
   // ── Firestore User Fields ──────────────────────────────────────
@@ -25,6 +26,7 @@ class AppConstants {
 
   // ── Storage Paths ──────────────────────────────────────────────
   static const String profileImagesPath = 'profile_images';
+  static const String itemImagesPath = 'item_images';
 
   // ── Validation ─────────────────────────────────────────────────
   static const int minPasswordLength = 6;
