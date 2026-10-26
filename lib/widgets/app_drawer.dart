@@ -7,6 +7,7 @@ import '../config/app_routes.dart';
 import '../config/app_theme.dart';
 import '../core/providers/auth_provider.dart';
 import '../core/providers/user_provider.dart';
+import '../features/report_item_screen.dart';
 
 /// Navigation drawer with user avatar, quick-links, and logout button.
 /// Used across the Home and other main screens.
@@ -44,18 +45,20 @@ class AppDrawer extends StatelessWidget {
                     label: 'Browse Items',
                     onTap: () {
                       Navigator.pop(context);
-                      // Placeholder — Member 2 will implement
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Coming soon!')),
-                      );
+                      Navigator.pushNamed(context, AppRoutes.browseItems);
                     },
                   ),
                   _DrawerItem(
-                    icon: Icons.add_circle_outline_rounded,
+                    icon: Icons.report_problem_outlined,
                     label: 'Report Lost Item',
                     onTap: () {
                       Navigator.pop(context);
-                      // Placeholder — Member 2 will implement
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ReportItemScreen(initialType: 'lost'),
+                        ),
+                      );
                     },
                   ),
                   _DrawerItem(
@@ -63,7 +66,28 @@ class AppDrawer extends StatelessWidget {
                     label: 'Report Found Item',
                     onTap: () {
                       Navigator.pop(context);
-                      // Placeholder — Member 3 will implement
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ReportItemScreen(initialType: 'found'),
+                        ),
+                      );
+                    },
+                  ),
+                  _DrawerItem(
+                    icon: Icons.assignment_outlined,
+                    label: 'My Reported Items',
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, AppRoutes.myReports);
+                    },
+                  ),
+                  _DrawerItem(
+                    icon: Icons.verified_user_outlined,
+                    label: 'My Claim Requests',
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, AppRoutes.myClaims);
                     },
                   ),
                   const Padding(

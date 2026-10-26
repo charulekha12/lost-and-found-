@@ -13,15 +13,15 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase. Android auto-initializes the default app natively
-  // via the google-services plugin before Dart runs, so this call always
-  // races a "duplicate-app" error there — ignore just that one.
+  // Initialize Firebase with duplicate-app safety
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } on FirebaseException catch (e) {
     if (e.code != 'duplicate-app') rethrow;
+  } catch (e) {
+    debugPrint('Firebase initialization notice: $e');
   }
 
   // Lock portrait orientation
@@ -30,21 +30,21 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Set system UI overlay style
+  // Set system UI overlay style matching Findora
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: AppTheme.darkBackground,
-      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: AppTheme.cardWhite,
+      systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
 
-  runApp(const CollegeLostFoundApp());
+  runApp(const FindoraApp());
 }
 
-class CollegeLostFoundApp extends StatelessWidget {
-  const CollegeLostFoundApp({super.key});
+class FindoraApp extends StatelessWidget {
+  const FindoraApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +54,9 @@ class CollegeLostFoundApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
-        title: 'Campus Lost & Found',
+        title: 'Findora — Campus Lost & Found',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
+        theme: AppTheme.lightTheme,
         onGenerateRoute: AppRoutes.onGenerateRoute,
         home: const SplashScreen(),
       ),
